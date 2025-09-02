@@ -18,16 +18,21 @@ const Login = () => {
     axios.post("/users/login",
        { email, password })
        .then((res) => {
-  console.log(res.data);
-  localStorage.setItem('token', res.data.token);
-  localStorage.setItem('user', JSON.stringify(res.data.user)); // 👈 Add this
-  setUser(res.data.user);
-  navigate('/h');
+  const { user, token } = res.data;
+
+  if (user && token) {
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(user));
+    setUser(user);
+    navigate('/h');
+  } else {
+    console.error("Login response missing user or token:", res.data);
+  }
 }).catch((err) => {
   const msg =
     err.response?.data?.message || err.message || "Something went wrong";
   console.error("Registration error:", msg);
-  setError(msg); // if you're showing error to user
+  //setError(msg); // if you're showing error to user
 });
     
      //  })

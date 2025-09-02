@@ -9,10 +9,16 @@ export const UserProvider = ({ children }) => {
 
     useEffect(() => {
   const storedUser = localStorage.getItem('user');
-  if (storedUser) {
-    const parsed = JSON.parse(storedUser);
-    console.log("Restoring user from localStorage:", parsed);
-    setUser(parsed);
+
+  if (storedUser && storedUser !== 'undefined') {
+    try {
+      const parsed = JSON.parse(storedUser);
+      console.log("Restoring user from localStorage:", parsed);
+      setUser(parsed);
+    } catch (err) {
+      console.error("Failed to parse user from localStorage:", err);
+      localStorage.removeItem('user'); // optional cleanup
+    }
   }
 }, []);
 
