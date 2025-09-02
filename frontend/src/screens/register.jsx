@@ -29,7 +29,7 @@ const Register = () => {
         console.log(res.data);
         localStorage.setItem('token', res.data.token);
         setUser(res.data.user);
-        navigate("/");
+        navigate("/h");
       }).catch((err) => {
   console.error("Full error object:", err);
 });
