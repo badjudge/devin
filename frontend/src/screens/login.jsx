@@ -39,12 +39,13 @@ const handleOtpSubmit = async (e) => {
   }
 };
 
-  const handleSubmit = (e) => {
+  const handleSubmit =async (e) => {
     
    e.preventDefault();
-    axios.post("/users/login",
-       { email, password })
+    await axios.post("/api/auth/login-password", { email, password })
+
        .then((res) => {
+        setOtpSent(true); // Show OTP input
   const { user, token } = res.data;
 
   if (user && token) {
