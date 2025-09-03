@@ -13,6 +13,9 @@ const Register = () => {
   const navigate = useNavigate();
 
  
+  
+
+ 
 
   const handleSubmit = (e) => {
     if (password !== confirm) {
@@ -28,6 +31,7 @@ const Register = () => {
     }).then((res) => {
         console.log(res.data);
         localStorage.setItem('token', res.data.token);
+        setOtpSent(true);
         setUser(res.data.user);
         navigate("/h");
       }).catch((err) => {
@@ -94,12 +98,16 @@ const Register = () => {
               autoComplete="new-password"
             />
           </div>
-          <button
-            type="submit"
-            className="w-full py-2 rounded bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold hover:from-purple-700 hover:to-blue-700 transition shadow-lg animate-bounce"
-          >
-            Register
-          </button>
+          {otpSent && (
+    <div>
+      <label>OTP</label>
+      <input type="text" value={otp} onChange={(e) => setOtp(e.target.value)} className="bg-amber-50 text-black" required />
+    </div>
+  )}
+
+  <button type="submit" className="bg-blue-600">
+    {otpSent ? "Verify OTP" : "Regiter"}
+  </button>
         </form>
         <p className="mt-6 text-gray-400 text-center">
           Already have an account?{" "}

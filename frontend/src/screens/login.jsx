@@ -12,6 +12,33 @@ const Login = () => {
   const { setUser } = useContext(UserContext); // Access setUser from UserContext 
   const navigate = useNavigate();
 
+  const [otpSent, setOtpSent] = useState(false);
+
+const handlePasswordSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    await axios.post("/api/auth/login-password", { email, password });
+    setOtpSent(true);
+  } catch (err) {
+    console.error("Login failed:", err);
+  }
+};
+
+const [otp, setOtp] = useState("");
+
+const handleOtpSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const res = await axios.post("/api/auth/verify-otp", { email, otp });
+    const { token } = res.data;
+    localStorage.setItem("token", token);
+    setUser({ email });
+    navigate("/h");
+  } catch (err) {
+    console.error("OTP verification failed:", err);
+  }
+};
+
   const handleSubmit = (e) => {
     
    e.preventDefault();
@@ -44,7 +71,7 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-900">
       <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-white text-center">Login</h2>
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={otpSent ? handleOtpSubmit : handlePasswordSubmit} className="space-y-5">
           <div>
             <label className="block text-gray-300 mb-2" htmlFor="email">
               Email
@@ -75,12 +102,17 @@ const Login = () => {
               autoComplete="current-password"
             />
           </div>
-          <button
-            type="submit"
-            className="w-full py-2 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
-          >
-            Login
-          </button>
+          {otpSent && (
+    <div>
+      <label className="block text-gray-300 mb-2" htmlFor="password">OTP</label>
+      <input type="text" value={otp} onChange={(e) => setOtp(e.target.value)} className="w-full px-4 py-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+    </div>
+  )}
+
+  <button type="submit" className="bg-blue-600">
+    {otpSent ? "Verify OTP" : "Login"}
+  </button>
+
         </form>
         <p className="mt-6 text-gray-400 text-center">
           Don't have an account?{" "}
